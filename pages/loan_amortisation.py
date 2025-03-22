@@ -4,7 +4,12 @@ sys.path.insert(0, '/workspaces/fintech/procedures')
 from procedures.calculate_amortisation import calculate_amortisation
 import datetime
 import pandas as pd
+import locale
+
+import pycountry_convert as pc
+import pycountry
 import requests
+
 
 
 wide_mode = True
@@ -23,19 +28,19 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-def get_currency_from_ip():
+def get_currency(country_code):
     try:
-        response = requests.get("https://ipapi.co/json/")
-        data = response.json()
-        country = data.get("country_name", "Unknown")
-        currency = data.get("currency", "USD")  # Default to USD if not found
-        return country, currency
-    except Exception as e:
-        st.error(f"Error getting location: {e}")
-        return "Unknown", "USD"
+        country = pycountry.countries.get(alpha_2=country_code)
+        currency = pycountry.currencies.get(numeric=country.numeric)
+        return currency.alpha_3 if currency else "USD"
+    except:
+        return "USD"
 
-# Get country and currency
-country, currency = get_currency_from_ip()
+# Get user country from IP
+data = requests.get("https://ipapi.co/json/").json()
+user_country = data.get("country_code", "US")
+currency = get_currency(user_country)
+
 
 # User Inputs
 start_date = st.date_input("Start Date", value=datetime.datetime.now().date())
