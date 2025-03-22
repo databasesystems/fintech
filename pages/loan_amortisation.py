@@ -2,20 +2,23 @@ import streamlit as st
 import sys
 sys.path.insert(0, '/workspaces/fintech/procedures')
 from procedures.calculate_amortisation import calculate_amortisation
+from procedures.curr import get_currency_symbol_from_locale
+
 import datetime
 import pandas as pd
-import locale
+from forex_python.converter import CurrencyCodes
 
 import pycountry_convert as pc
-import pycountry
-import requests
+import json
+from streamlit_javascript import st_javascript
+from procedures.curr import get_currency_symbol 
 
 
 
 wide_mode = True
 
 # Streamlit App
-st.title(" Loan Amortization Calculator")
+st.title(" Loan Amortisation Calculator")
 
 # Add CSS to make font smaller
 # Inject CSS for styling metric numbers
@@ -28,21 +31,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-def get_currency(country_code):
-    try:
-        country = pycountry.countries.get(alpha_2=country_code)
-        currency = pycountry.currencies.get(numeric=country.numeric)
-        return currency.alpha_3 if currency else "USD"
-    except:
-        return "USD"
-
-# Get user country from IP
-data = requests.get("https://ipapi.co/json/").json()
-user_country = data.get("country_code", "US")
-currency = get_currency(user_country)
 
 
-# User Inputs
+# User Inputs form
 start_date = st.date_input("Start Date", value=datetime.datetime.now().date())
 col1, col2 = st.columns(2)
 
@@ -81,7 +72,19 @@ if loan_term['years'] == 0 and loan_term['months'] == 0:
 else:
     df = calculate_amortisation(loan_amount, annual_rate, loan_term,  extra_payment, lump_sum, lump_sum_date, start_date)
 
-# Add a selectbox to choose the currency
+# Add a routine to choose the currency
+# Use JavaScript to get the browser's locale
+browser_locale = st_javascript("JSON.stringify(navigator.language || navigator.userLanguage)")
+
+# If browser locale is returned, use it to get the currency symbol
+if browser_locale:
+    browser_locale = json.loads(browser_locale)  # Convert the locale to Python string
+    currency = get_currency_symbol(browser_locale)  # Get the currency symbol
+
+    st.write(f"Detected Browser Locale: **{browser_locale}**")
+    st.write(f"Currency Symbol: **{currency}**")
+else:
+    st.write("Could not detect browser locale.")
 
 
 with st.expander("Loan Summary", expanded=True):
@@ -104,7 +107,7 @@ with st.expander("Loan Summary", expanded=True):
     st.write("Loan Balance Over Time")
 
 # Display Table
-st.subheader("Amortization Schedule")
+st.subheader("Amortisation Schedule")
 st.dataframe(df)
 
 # Download as CSV
