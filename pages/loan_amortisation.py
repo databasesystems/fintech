@@ -2,7 +2,8 @@ import streamlit as st
 import sys
 sys.path.insert(0, '/workspaces/fintech/procedures')
 from procedures.calculate_amortisation import calculate_amortisation
-from procedures.curr import get_currency_symbol_from_locale
+import plotly.express as px
+import plotly.graph_objects as go
 
 import datetime
 import pandas as pd
@@ -18,7 +19,7 @@ from procedures.curr import get_currency_symbol
 wide_mode = True
 
 # Streamlit App
-st.title(" Loan Amortisation Calculator")
+st.title(" Loan amortisation calculator")
 
 # Add CSS to make font smaller
 # Inject CSS for styling metric numbers
@@ -38,16 +39,16 @@ start_date = st.date_input("Start Date", value=datetime.datetime.now().date())
 col1, col2 = st.columns(2)
 
 with col1:
-    loan_amount = st.number_input("Loan Amount (£/$/€)", min_value=1000.0, value=50000.0)
+    loan_amount = st.number_input("Loan Amount", min_value=1000.0, value=100000.0)
 with col2:
-    annual_rate = st.number_input("Annual Interest Rate (%)", min_value=0.0, value=5.0)
+    annual_rate = st.number_input("Annual Interest Rate (%)", min_value=0.0, value=5.38)
 
 col3, col4 = st.columns(2)
 
 with col3:
-    loan_term_years = st.number_input("Loan term (years)", min_value=0, value=15)
+    loan_term_years = st.number_input("Loan term (years)", min_value=0, value=25)
 with col4:
-    loan_term_months = st.number_input("Loan term (months)", min_value=0, value=7)
+    loan_term_months = st.number_input("Loan term (months)", min_value=0, value=0)
 
 col5, col6 = st.columns(2)
 
@@ -87,10 +88,9 @@ if browser_locale:
     browser_locale = json.loads(browser_locale)  # Convert the locale to Python string
     currency = get_currency_symbol(browser_locale)  # Get the currency symbol
 
-    st.write(f"Detected Browser Locale: **{browser_locale}**")
-    st.write(f"Currency Symbol: **{currency}**")
+    st.write(f"Detected Browser Locale: **{browser_locale}**, Currency Symbol: **{currency}**")
 else:
-    st.write("Could not detect browser locale.")
+    st.write("Could not detect browser locale, no currency symbol will be displayed.")
 
 df['Interest'] = pd.to_numeric(df['Interest'], errors='coerce')
 df['Principal'] = pd.to_numeric(df['Principal'], errors='coerce')
@@ -116,9 +116,55 @@ with st.expander("Loan Summary", expanded=True):
         col5.metric("Term End Date", term_end_date_str)
 
 # Display Graph
-    df['Date'] = pd.to_datetime(df['Date'])
-    st.line_chart(df.set_index('Date')[['Balance']], width=0, height=0, use_container_width=True)
-    st.write("Loan Balance Over Time")
+
+# Ensure Date column is in datetime format
+df['Date'] = pd.to_datetime(df['Date'])
+
+# Extract year for aggregation
+df['Year'] = df['Date'].dt.year
+
+# Group by Year to sum Interest and Principal paid
+df_yearly = df.groupby('Year', as_index=False).sum(numeric_only=True)[['Year', 'Principal', 'Interest']]
+
+# Create a stacked bar chart with Yearly Principal and Interest payments
+fig = px.bar(
+    df_yearly, x="Year", y=["Principal", "Interest"],
+    labels={"value": "Total Paid", "variable": "Payment Breakdown"},
+    title="Loan Amortization: Yearly Cumulative Principal & Interest",
+    color_discrete_map={"Principal": "blue", "Interest": "red"},
+    barmode="stack"
+)
+
+# Display in Streamlit
+st.plotly_chart(fig, use_container_width=True)
+
+
+
+fig = px.line(
+    df, x="Date", y="Balance",
+    labels={"Balance": "Remaining Loan Balance"},
+    title="Remaining Loan Balance Over Time",
+    line_shape="spline",  # Smooth curve
+    color_discrete_sequence=["red"]
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+total_principal = df["Principal"].sum()
+total_interest = df["Interest"].sum()
+total_paid = total_principal + total_interest
+interest_percentage = (total_interest / total_paid) * 100
+
+fig = go.Figure(go.Indicator(
+    mode="gauge+number",
+    value=interest_percentage,
+    title={"text": "Interest as % of Total Payments"},
+    gauge={"axis": {"range": [0, 100]}, "bar": {"color": "red"}}
+))
+
+
+
+
 
 # Display Table
 st.subheader("Amortisation Schedule")

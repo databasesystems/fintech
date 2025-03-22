@@ -6,3 +6,4 @@ pycountry
 requests
 streamlit-javascript
 forex-python
+plotly-express
