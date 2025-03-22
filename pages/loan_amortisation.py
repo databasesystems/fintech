@@ -65,13 +65,19 @@ else:
 
 # Compute Amortization Schedule
 loan_term = {'years': loan_term_years, 'months': loan_term_months}
-df = calculate_amortisation(loan_amount, annual_rate, loan_term,  extra_payment, lump_sum, lump_sum_date, start_date)
+# Compute Amortization Schedule
+df, term_end_date = calculate_amortisation(loan_amount, annual_rate, loan_term, extra_payment, lump_sum, lump_sum_date, start_date)
 
+# Convert term_end_date to formatted string
+term_end_date_str = term_end_date.strftime("%Y-%m-%d")
 if loan_term['years'] == 0 and loan_term['months'] == 0:
     st.error("Loan term cannot be zero")
 else:
-    df = calculate_amortisation(loan_amount, annual_rate, loan_term,  extra_payment, lump_sum, lump_sum_date, start_date)
+    # Compute Amortization Schedule
+    df, term_end_date = calculate_amortisation(loan_amount, annual_rate, loan_term, extra_payment, lump_sum, lump_sum_date, start_date)
 
+# Convert term_end_date to formatted string
+term_end_date_str = term_end_date.strftime("%Y-%m-%d")
 # Add a routine to choose the currency
 # Use JavaScript to get the browser's locale
 browser_locale = st_javascript("JSON.stringify(navigator.language || navigator.userLanguage)")
@@ -86,20 +92,28 @@ if browser_locale:
 else:
     st.write("Could not detect browser locale.")
 
+df['Interest'] = pd.to_numeric(df['Interest'], errors='coerce')
+df['Principal'] = pd.to_numeric(df['Principal'], errors='coerce')
+df['Payment'] = pd.to_numeric(df['Payment'], errors='coerce')
+
+
 
 with st.expander("Loan Summary", expanded=True):
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     if currency == "None":
-        col1.metric("Monthly Payments", f"{df['Payment'].iloc[1]:,.2f}", delta=None)
-        col2.metric("Total Interest Paid", f"{df['Interest'].sum():,.2f}", delta=None)
-        col3.metric("Total Principal Paid", f"{df['Principal'].sum():,.2f}", delta=None)
-        col4.metric("Total Monies Paid", f"{df['Payment'].sum():,.2f}", delta=None)
+        col1, col2, col3, col4, col5 = st.columns(5)
+        col1.metric(f"Monthly Payments ({currency})", f"{currency}{df['Payment'].iloc[1]:,.2f}")
+        col2.metric(f"Total Interest Paid ({currency})", f"{currency}{df['Interest'].sum():,.2f}")
+        col3.metric(f"Total Principal Paid ({currency})", f"{currency}{df['Principal'].sum():,.2f}")
+        col4.metric(f"Total Monies Paid ({currency})", f"{currency}{(df['Principal'].sum() + df['Interest'].sum()):,.2f}")
+        col5.metric("Term End Date", term_end_date_str)
     else:
-        col1.metric(f"Monthly Payments ({currency})", f"{currency}{df['Payment'].iloc[1]:,.2f}", delta=None)
-        col2.metric(f"Total Interest Paid ({currency})", f"{currency}{df['Interest'].sum():,.2f}", delta=None)
-        col3.metric(f"Total Principal Paid ({currency})", f"{currency}{df['Principal'].sum():,.2f}", delta=None)
-        col4.metric(f"Total Monies Paid ({currency})", f"{currency}{df['Payment'].sum():,.2f}", delta=None)
-
+        col1, col2, col3, col4, col5 = st.columns(5)
+        col1.metric(f"Monthly Payments ({currency})", f"{currency}{df['Payment'].iloc[1]:,.2f}")
+        col2.metric(f"Total Interest Paid ({currency})", f"{currency}{df['Interest'].sum():,.2f}")
+        col3.metric(f"Total Principal Paid ({currency})", f"{currency}{df['Principal'].sum():,.2f}")
+        col4.metric(f"Total Monies Paid ({currency})", f"{currency}{(df['Principal'].sum() + df['Interest'].sum()):,.2f}")
+        col5.metric("Term End Date", term_end_date_str)
 
 # Display Graph
     df['Date'] = pd.to_datetime(df['Date'])

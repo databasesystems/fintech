@@ -22,6 +22,9 @@ def calculate_amortisation(loan_amount, annual_rate, loan_term, extra_payment=0,
     amortization_data = [["Date", "Payment", "Principal", "Interest", "Balance"]]
     amortization_data.append([current_date.strftime('%Y-%m-%d'), 0, 0, 0, round(balance, 2)])  # Initial row
 
+    total_payment_made = 0  # Track the total payment made
+    term_end_date = start_date  # Initialize the term end date
+
     # Generate schedule
     for _ in range(1, total_months + 1):
         interest = balance * rate_per_period
@@ -34,11 +37,15 @@ def calculate_amortisation(loan_amount, annual_rate, loan_term, extra_payment=0,
         # Apply lump sum payment (only once)
         if lump_sum and lump_sum_date and current_date >= lump_sum_date:
             principal += lump_sum
+            total_payment_made += lump_sum  # Add lump sum to total payments
             lump_sum = 0  # Ensure lump sum is applied only once
-
+        
         # Ensure principal does not exceed remaining balance
         principal = min(principal, balance)
         balance -= principal
+
+        # Add the regular payment amount to the total payment made
+        total_payment_made += payment + extra_payment
 
         # Store amortization row
         amortization_data.append([
@@ -49,6 +56,9 @@ def calculate_amortisation(loan_amount, annual_rate, loan_term, extra_payment=0,
             round(balance, 2)
         ])
 
+        # Update term end date
+        term_end_date = current_date
+
         # Advance to next month
         current_date += relativedelta(months=1)
 
@@ -58,4 +68,5 @@ def calculate_amortisation(loan_amount, annual_rate, loan_term, extra_payment=0,
 
     # Convert to DataFrame
     df = pd.DataFrame(amortization_data[1:], columns=amortization_data[0])  # Remove header row for DataFrame
-    return df
+    
+    return df, term_end_date  # Return DataFrame and the calculated term end date
