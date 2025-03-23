@@ -36,16 +36,16 @@ def create_loan_summary(df, term_end_date, lump_sum, extra_payment):
         remaining_balance = 0.0
 
     return {
-        "Loan Amount (Principal)": f"£{loan_amount:,.2f}",
-        "Interest Rate": f"{annual_rate}% per annum",
-        "Loan Term": f"{loan_term_years} years {loan_term_months} months",
-        "Monthly Payment": f"£{df['Payment'].iloc[0]:,.2f}",
-        "Overpayment Made": f"£{lump_sum:,.2f}" if lump_sum > 0 else f"£{extra_payment:,.2f}" if extra_payment > 0 else "£0.00",
-        "Total Principal Paid": f"£{df['Principal'].sum():,.2f}",
-        "Total Interest Paid": f"£{df['Interest'].sum():,.2f}",
-        "Total Paid (Principal + Interest)": f"£{(df['Principal'].sum() + df['Interest'].sum()):,.2f}",
-        "Remaining Balance": f"£{remaining_balance:,.2f}",
-        "Loan End Date": term_end_date.strftime("%Y-%m-%d")
+        "Loan to pay": f"£{loan_amount:,.2f}",
+        "Interest rate": f"{annual_rate}% per annum",
+        "Loan term": f"{loan_term_years} years {loan_term_months} months",
+        "Monthly payments": f"£{df['Payment'].iloc[0]:,.2f}",
+        "Overpayment": f"£{lump_sum:,.2f}" if lump_sum > 0 else f"£{extra_payment:,.2f}" if extra_payment > 0 else "£0.00",
+        "Principal": f"£{df['Principal'].sum():,.2f}",
+        "Interest": f"£{df['Interest'].sum():,.2f}",
+        # "Principal + Interest": f"£{(df['Principal'].sum() + df['Interest'].sum()):,.2f}",
+        "Remaining balance": f"£{remaining_balance:,.2f}",
+        "Loan end date": term_end_date.strftime("%Y-%m-%d")
     }
 
 # Create loan summary for both scenarios
@@ -54,7 +54,7 @@ loan_summary_with_overpayment = create_loan_summary(df_with_overpayment, term_en
 
 # Display loan summaries side by side for comparison
 with st.container():
-    st.subheader("Loan Summary Comparison")
+    st.subheader("Loan summary comparison")
     col1, col2, col3 = st.columns([2, 2, 4])
     with col1:
         st.write("**Details**")
@@ -63,7 +63,7 @@ with st.container():
     with col3:
         st.write("**With Overpayment**")
 
-    loan_summary_no_overpayment["Overpayment Made"] = 0
+    loan_summary_no_overpayment["Overpayment"] = "£0.00"
     for key, value in loan_summary_no_overpayment.items():
         col1, col2, col3 = st.columns([2, 2, 4])
         with col1:
@@ -71,7 +71,7 @@ with st.container():
         with col2:
             st.write(value)
         with col3:
-            if loan_summary_no_overpayment[key] != loan_summary_with_overpayment[key]:
+            if loan_summary_no_overpayment[key] != loan_summary_with_overpayment[key] and key in ["Interest", "Loan end date"]:
                 st.markdown(f"<span style='color: green;'>{loan_summary_with_overpayment[key]}</span>", unsafe_allow_html=True)
             else:
                 st.write(loan_summary_with_overpayment[key])

@@ -40,7 +40,7 @@ def car_loan_amortization(loan_amount, loan_term, interest_rate):
 
 st.subheader("Car Loan Amortization Calculator")
 
-st.sidebar.header("Loan Details")
+st.sidebar.header("Car Loan Details")
 
 loan_amount = st.sidebar.number_input("Loan Amount (£)", min_value=1000.0, value=13060.0)
 loan_term = st.sidebar.number_input("Loan Term (Months)", min_value=1, value=60)
