@@ -15,8 +15,8 @@ loan_amount = st.sidebar.number_input("Loan Amount", min_value=1.0, value=100000
 annual_rate = st.sidebar.number_input("Annual Interest Rate (%)", min_value=0.0, value=5.0)
 loan_term_years = st.sidebar.number_input("Loan Term (Years)", min_value=0, value=6)
 loan_term_months = st.sidebar.number_input("Loan Term (Months)", min_value=0, value=15)
-extra_payment = st.sidebar.number_input("Extra Monthly Payment", min_value=0.0, value=0.0)
-lump_sum = st.sidebar.number_input("One-Time Lump Sum Payment", min_value=0.0, value=0.0)
+extra_payment = st.sidebar.number_input("Extra Monthly Payment", min_value=0.0, value=100.0)
+lump_sum = st.sidebar.number_input("One-Time Lump Sum Payment", min_value=0.0, value=2500.0)
 lump_sum_date = st.sidebar.date_input("Lump Sum Payment Date", value=start_date) if lump_sum > 0 else None
 
 # Calculate Amortization without overpayments
