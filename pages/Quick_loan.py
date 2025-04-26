@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 
+st.set_page_config(page_title="Quick loan calculation", layout="wide")
 
 def car_loan_amortization(loan_amount, loan_term, interest_rate):
     # Convert interest rate to decimal

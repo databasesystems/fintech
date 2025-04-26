@@ -5,7 +5,7 @@ import plotly.express as px
 from procedures.calculate_amortisation import calculate_amortisation
 from dateutil.relativedelta import relativedelta
 
-st.set_page_config(page_title="My Streamlit App", page_icon=":house:")
+st.set_page_config(page_title="Advanced loan calculation", layout="wide")
 
 # Sidebar Inputs
 st.sidebar.header("Loan Details")
