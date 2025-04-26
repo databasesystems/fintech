@@ -38,9 +38,9 @@ def car_loan_amortization(loan_amount, loan_term, interest_rate):
     df = pd.DataFrame(amortization_schedule, columns=['Day', 'Payment', 'Interest', 'Principal', 'Balance', 'Total Interest'])
     return df
 
-st.subheader("Car Loan Amortization Calculator")
+st.subheader("Quick Loan Calculator")
 
-st.sidebar.header("Car Loan Details")
+st.sidebar.header("Loan Details")
 
 loan_amount = st.sidebar.number_input("Loan Amount (£)", min_value=1000.0, value=13060.0)
 loan_term = st.sidebar.number_input("Loan Term (Months)", min_value=1, value=60)
@@ -56,8 +56,12 @@ st.subheader("Loan Summary")
 
 col1, col2, col3 = st.columns(3)
 
-col1.metric("Total Loan", f"£{total_principal:,.0f}")
-col2.metric("Total Interest to pay", f"£{total_interest:,.0f}")
-col3.metric("Total Payment at the end of term", f"£{total_payment:,.0f}")
+col1.metric("Initial Loan", f"£{total_principal:,.0f}")
+col2.metric("Interest to pay", f"£{total_interest:,.0f}")
+col3.metric("Total Payment at the end of term **", f"£{total_payment:,.0f}")
+
+st.write("**Calculations for the total payment at the end of the term show the total amount you will pay, including interest.")
+
+# st.write("See the schedule of payments below...")
 
 # st.write(df)
