@@ -39,10 +39,10 @@ def car_loan_amortization(loan_amount, loan_term, interest_rate):
     return df
 
 st.subheader("Quick Loan Calculator")
-
+st.write("See the interest you will have to pay on a loan")
 st.sidebar.header("Loan Details")
 
-loan_amount = st.sidebar.number_input("Loan Amount (£)", min_value=1000.0, value=13060.0)
+loan_amount = st.sidebar.number_input("Loan Amount (£)", min_value=1.0, value=15000.0)
 loan_term = st.sidebar.number_input("Loan Term (Months)", min_value=1, value=60)
 interest_rate = st.sidebar.number_input("Interest Rate (%)", min_value=0.0, value=6.1)
 
@@ -56,7 +56,7 @@ st.subheader("Loan Summary")
 
 col1, col2, col3 = st.columns(3)
 
-col1.metric("Initial Loan", f"£{total_principal:,.0f}")
+col1.metric("Your Loan", f"£{total_principal:,.0f}")
 col2.metric("Interest to pay", f"£{total_interest:,.0f}")
 col3.metric("Total Payment at the end of term **", f"£{total_payment:,.0f}")
 
