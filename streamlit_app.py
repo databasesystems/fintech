@@ -13,7 +13,7 @@ st.markdown(
     **Welcome to the Financial Data Visualisation Platform!**
     
     This website is an **experimental** demonstration of how **Streamlit** can be used to create 
-    interactive and insightful visualisations for **financial use cases**.
+    interactive and insightful visualisations for **financial data use cases**.
     
     ⚠️ **Disclaimer:** This platform is for **demonstration purposes only** and should **not** be used for 
     financial or investment decision-making. The data and insights provided here are illustrative 
@@ -25,10 +25,10 @@ st.markdown(
 st.write("---")
 
 # Call to action
-st.subheader("🔍 Explore the visualisations")
+st.subheader("🔍 Explore the loan visualisations")
 st.markdown(
     """
-    Navigate through the sections using the sidebar to explore various data visualisations.
+    Navigate through the sections using the sidebar to input and explore various loan data visualisations.
     """
 )
 

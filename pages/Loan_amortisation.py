@@ -5,6 +5,7 @@ import plotly.express as px
 from procedures.calculate_amortisation import calculate_amortisation
 from dateutil.relativedelta import relativedelta
 
+
 # Sidebar Inputs
 st.sidebar.header("Loan Details")
 
@@ -57,6 +58,7 @@ with st.container():
     st.title("Save interest with overpayments!")
     st.text("This table compares paying your loan with just the standard monthly amount versus adding extra each month. While paying extra leads to slightly higher monthly payments, the table shows this results in less interest paid over the life of the loan and gets it paid off sooner.")
     st.text("See the impact of overpayments highlighted in the 'With Overpayment' column")
+    st.subheader("Loan Summary")
     col1, col2, col3 = st.columns([2, 2, 4])
     with col1:
         st.write("**Details**")
