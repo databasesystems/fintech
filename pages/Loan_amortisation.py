@@ -110,7 +110,7 @@ fig.update_layout(
     )
 )
 
-st.write(":arrow_left: Change the values on the sidebar add you own values to see changes ")
+st.write(":arrow_left: Change the values on the sidebar to see changes ")
 # Display the plotly chart
 st.plotly_chart(fig, use_container_width=True)
 
