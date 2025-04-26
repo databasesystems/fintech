@@ -9,10 +9,10 @@ from dateutil.relativedelta import relativedelta
 st.sidebar.header("Loan Details")
 
 start_date = st.sidebar.date_input("Start Date", value=datetime.datetime.now().date())
-loan_amount = st.sidebar.number_input("Loan Amount", min_value=1000.0, value=100000.0)
-annual_rate = st.sidebar.number_input("Annual Interest Rate (%)", min_value=0.0, value=5.38)
+loan_amount = st.sidebar.number_input("Loan Amount", min_value=1.0, value=100000.0)
+annual_rate = st.sidebar.number_input("Annual Interest Rate (%)", min_value=0.0, value=5.0)
 loan_term_years = st.sidebar.number_input("Loan Term (Years)", min_value=0, value=6)
-loan_term_months = st.sidebar.number_input("Loan Term (Months)", min_value=0, value=11)
+loan_term_months = st.sidebar.number_input("Loan Term (Months)", min_value=0, value=15)
 extra_payment = st.sidebar.number_input("Extra Monthly Payment", min_value=0.0, value=0.0)
 lump_sum = st.sidebar.number_input("One-Time Lump Sum Payment", min_value=0.0, value=0.0)
 lump_sum_date = st.sidebar.date_input("Lump Sum Payment Date", value=start_date) if lump_sum > 0 else None
@@ -54,7 +54,9 @@ loan_summary_with_overpayment = create_loan_summary(df_with_overpayment, term_en
 
 # Display loan summaries side by side for comparison
 with st.container():
-    st.subheader("Loan summary comparison")
+    st.title("Save interest with overpayments!")
+    st.text("This table compares paying your loan with just the standard monthly amount versus adding extra each month. While paying extra leads to slightly higher monthly payments, the table shows this results in less interest paid over the life of the loan and gets it paid off sooner.")
+    st.text("See the impact of overpayments highlighted in the 'With Overpayment' column")
     col1, col2, col3 = st.columns([2, 2, 4])
     with col1:
         st.write("**Details**")
