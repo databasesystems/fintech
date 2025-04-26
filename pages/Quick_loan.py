@@ -38,8 +38,8 @@ def car_loan_amortization(loan_amount, loan_term, interest_rate):
     df = pd.DataFrame(amortization_schedule, columns=['Day', 'Payment', 'Interest', 'Principal', 'Balance', 'Total Interest'])
     return df
 
-st.subheader("Quick Loan Calculator")
-st.write("See the interest you will have to pay on a loan")
+st.subheader("Very quick loan calculator")
+st.write("See the interest you will have to pay on a loan. Use sidebar to enter loan details")
 st.sidebar.header("Loan Details")
 
 loan_amount = st.sidebar.number_input("Loan Amount (£)", min_value=1.0, value=15000.0)
