@@ -2,12 +2,12 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Financial Data Visualisation",
-    page_icon="📊",
+    page_icon="🏠",
     layout="wide"
 )
 
 # Title and description
-st.title("📊 Financial Data Visualisation Platform")
+st.title("🏠 Financial Data Visualisation Platform")
 st.markdown(
     """
     **Welcome to the Financial Data Visualisation Platform!**

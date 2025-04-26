@@ -5,6 +5,7 @@ import plotly.express as px
 from procedures.calculate_amortisation import calculate_amortisation
 from dateutil.relativedelta import relativedelta
 
+st.set_page_config(page_title="My Streamlit App", page_icon=":house:")
 
 # Sidebar Inputs
 st.sidebar.header("Loan Details")
@@ -55,7 +56,7 @@ loan_summary_with_overpayment = create_loan_summary(df_with_overpayment, term_en
 
 # Display loan summaries side by side for comparison
 with st.container():
-    st.title("Save interest with overpayments!")
+    st.title("📈 Save interest with overpayments!")
     st.text("This table compares paying your loan with just the standard monthly amount versus adding extra each month. While paying extra leads to slightly higher monthly payments, the table shows this results in less interest paid over the life of the loan and gets it paid off sooner.")
     st.text("See the impact of overpayments highlighted in the 'With Overpayment' column")
     st.subheader("Loan Summary")
